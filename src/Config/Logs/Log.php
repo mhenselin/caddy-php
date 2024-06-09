@@ -16,10 +16,14 @@ use mattvb91\CaddyPhp\Interfaces\Arrayable;
 class Log implements Arrayable
 {
     private LogLevel $level;
+    private ?Sampling $sampling;
 
-    public function __construct(LogLevel $level = LogLevel::DEBUG)
-    {
+    public function __construct(
+        LogLevel $level = LogLevel::DEBUG,
+        Sampling $sampling = null
+    ) {
         $this->level = $level;
+        $this->sampling = $sampling;
     }
 
     public function getLevel(): LogLevel
@@ -27,10 +31,23 @@ class Log implements Arrayable
         return $this->level;
     }
 
+    public function setSample(Sampling $sample): self
+    {
+        $this->sampling = $sample;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
-        return [
+        $array = [
             'level' => $this->getLevel(),
         ];
+
+        if (isset($this->sampling)) {
+            $array['sampling'] = $this->sampling->toArray();
+        }
+
+        return $array;
     }
 }

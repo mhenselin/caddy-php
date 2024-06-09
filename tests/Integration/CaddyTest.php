@@ -14,6 +14,7 @@ use mattvb91\CaddyPhp\Config\Apps\Http\Server\Routes\Match\Host;
 use mattvb91\CaddyPhp\Config\Apps\Tls;
 use mattvb91\CaddyPhp\Config\Logging;
 use mattvb91\CaddyPhp\Config\Logs\Log;
+use mattvb91\CaddyPhp\Config\Logs\Sampling;
 use PHPUnit\Framework\TestCase;
 
 class CaddyTest extends TestCase
@@ -36,7 +37,7 @@ class CaddyTest extends TestCase
         $caddy = new Caddy();
         $caddy->setLogging(
             (new Logging())
-                ->addLog(new Log())
+                ->addLog(new Log(sampling: new Sampling()))
         );
 
         $this->assertTrue($caddy->load());

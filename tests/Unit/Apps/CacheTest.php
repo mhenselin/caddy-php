@@ -1,6 +1,6 @@
 <?php
 
-namespace Unit\Apps;
+namespace Tests\Unit\Apps;
 
 use mattvb91\CaddyPhp\Config\Apps\Cache;
 use PHPUnit\Framework\TestCase;
