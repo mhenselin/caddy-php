@@ -68,7 +68,7 @@ jobs:
           pull-image: true # Raise the flag to try to pull image
 
   phpunit:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-caddy-image
       - build-composer-image
@@ -94,6 +94,7 @@ jobs:
           docker run -v $(pwd):/app docker.pkg.github.com/mattvb91/${{ env.REPO_NAME }}/composer:head composer phpstan
           docker run -v $(pwd):/app docker.pkg.github.com/mattvb91/${{ env.REPO_NAME }}/composer:head composer codesniffer
           docker run -v $(pwd):/app docker.pkg.github.com/mattvb91/${{ env.REPO_NAME }}/composer:head composer rector
+          docker run -v $(pwd):/app docker.pkg.github.com/mattvb91/${{ env.REPO_NAME }}/composer:head composer phpmnd
           docker run --network="caddy-network" -e XDEBUG_MODE=coverage -v $(pwd):/app docker.pkg.github.com/mattvb91/${{ env.REPO_NAME }}/composer:head composer phpunit
         env:
           REPO_NAME: ${{ github.event.repository.name }}

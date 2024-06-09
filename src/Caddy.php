@@ -13,6 +13,7 @@ use mattvb91\CaddyPhp\Config\Logging;
 use mattvb91\CaddyPhp\Exceptions\CaddyClientException;
 use mattvb91\CaddyPhp\Interfaces\App;
 use mattvb91\CaddyPhp\Interfaces\Arrayable;
+use Symfony\Component\HttpFoundation\Response;
 
 class Caddy implements Arrayable
 {
@@ -94,7 +95,7 @@ class Caddy implements Arrayable
         if (
             $this->client->put($this->hostsCache[$hostIdentifier]['path'] . '/0', [
                 'json' => $hostname,
-            ])->getStatusCode() === 200
+            ])->getStatusCode() === Response::HTTP_OK
         ) {
             $this->hostsCache[$hostIdentifier]['host']->addHost($hostname);
             return true;
@@ -116,7 +117,7 @@ class Caddy implements Arrayable
         if (
             $this->client->delete($path, [
                 'json' => $hostname,
-            ])->getStatusCode() === 200
+            ])->getStatusCode() === Response::HTTP_OK
         ) {
             $this->hostsCache[$hostIdentifier]['host']->syncRemoveHost($hostname);
             return true;
@@ -159,7 +160,7 @@ class Caddy implements Arrayable
                 'Surrogate-Key' => implode(', ', $surrogates),
                 'Host'          => $this->cacheHostnameHeader,
             ],
-        ])->getStatusCode() === 204;
+        ])->getStatusCode() === Response::HTTP_NO_CONTENT;
     }
 
     /**
@@ -171,7 +172,7 @@ class Caddy implements Arrayable
         try {
             return $this->client->post('/load', [
                 'json' => $this->toArray(),
-            ])->getStatusCode() === 200;
+            ])->getStatusCode() === Response::HTTP_OK;
         } catch (ClientException $e) {
             throw new CaddyClientException(
                 $e->getResponse()->getBody() . PHP_EOL . json_encode($this->toArray(), JSON_PRETTY_PRINT)
