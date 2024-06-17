@@ -4,6 +4,7 @@ namespace Integration;
 
 use GuzzleHttp\Client;
 use mattvb91\CaddyPhp\Caddy;
+use mattvb91\CaddyPhp\Config\Apps\Events;
 use mattvb91\CaddyPhp\Config\Apps\Http;
 use mattvb91\CaddyPhp\Config\Apps\Http\Server\Route;
 use mattvb91\CaddyPhp\Config\Apps\Http\Server\Routes\Handle\Authentication;
@@ -59,6 +60,34 @@ class CaddyTest extends TestCase
         );
 
         $this->assertTrue($caddy->load());
+    }
+
+    /**
+     * @coversNothing
+     */
+    public function testCanLoadWithEventsApp()
+    {
+        $caddy = new Caddy();
+        $caddy->addApp(
+            (new Events([
+                (new Events\Subscription(
+                    handlers: [
+                        new Events\Handlers\Exec(
+                            "datetime",
+                            [],
+                            "/tmp",
+                            0,
+                            false,
+                            []
+                        ),
+                    ]
+                )),
+            ]))
+        );
+
+        $this->assertTrue(
+            $caddy->load()
+        );
     }
 
     /**
