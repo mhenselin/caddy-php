@@ -3,6 +3,8 @@
 namespace Tests;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use JsonException;
 use mattvb91\CaddyPhp\Caddy;
 use mattvb91\CaddyPhp\Config\Apps\Http\Server;
 
@@ -13,13 +15,16 @@ class TestCase extends \PHPUnit\Framework\TestCase
      * with new tests as we may be testing against an unrefreshed config.
      *
      * Confirm do we actually need to wait or is it instant?
+     * @throws GuzzleException|JsonException
      */
     public function assertCaddyConfigLoaded(Caddy $caddy): void
     {
-        $caddy->load();
+        $loaded = $caddy->load();
+        if (!$loaded) {
+            $this->fail('Couldnt verify the config has been loaded');
+        }
 
         $maxRetries = 3;
-        $loaded = false;
 
         do {
             $maxRetries--;
@@ -33,16 +38,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
             /** @var  $instanceConfig */
             if ($instanceConfig == $remoteConfig) {
-                $this->assertEquals($instanceConfig, $remoteConfig);
-                return;
+                break;
             }
 
             sleep(1); //Wait for caddy to refresh
-        } while ($maxRetries > 0 && !$loaded);
+        } while ($maxRetries > 0);
 
-        if (!$loaded) {
-            $this->fail('Couldnt verify the config has been loaded');
-        }
+        $this->assertEquals($instanceConfig, $remoteConfig);
     }
 
     public function getServerForTest(): Server

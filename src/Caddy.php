@@ -69,6 +69,7 @@ class Caddy implements Arrayable
      * If you are managing your hosts from an external source (for example db) and not directly in
      * your config you should sync your hosts from the caddy config before
      * making any changes for example trying to remove hosts
+     * @throws \Exception|GuzzleException
      */
     public function syncHosts(string $hostIdentifier): void
     {

@@ -5,6 +5,7 @@ namespace Unit;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use mattvb91\CaddyPhp\Caddy;
@@ -129,5 +130,16 @@ class CaddyTest extends TestCase
                 ],
             ],
         ], $server->toArray());
+    }
+
+    /**
+     * @covers \mattvb91\CaddyPhp\Caddy::buildHostsCache
+     * @throws GuzzleException
+     */
+    public function testBuildHostCache(): void
+    {
+        $caddy = new Caddy();
+        $this->assertInstanceOf(Caddy::class, $caddy);
+        $caddy->syncHosts('myTestHost');
     }
 }
