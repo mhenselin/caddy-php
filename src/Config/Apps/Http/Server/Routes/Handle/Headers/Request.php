@@ -34,6 +34,19 @@ class Request implements Arrayable
         return $this;
     }
 
+    /**
+     * @param string[] $values
+     * @return $this
+     */
+    public function setHeader(string $name, array $values): static
+    {
+        if (array_key_exists($name, $this->add)) {
+            $this->add[$name][] = $values;
+            return $this;
+        }
+        return $this->addHeader($name, $values);
+    }
+
     public function addDeleteHeader(string $header): static
     {
         $this->delete[] = $header;
