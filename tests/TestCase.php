@@ -19,12 +19,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     public function assertCaddyConfigLoaded(Caddy $caddy): void
     {
-        $loaded = $caddy->load();
-        if (!$loaded) {
-            $this->fail('Couldnt verify the config has been loaded');
-        }
+        $caddy->load();
 
         $maxRetries = 3;
+        $loaded = false;
 
         do {
             $maxRetries--;
@@ -38,11 +36,15 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
             /** @var  $instanceConfig */
             if ($instanceConfig == $remoteConfig) {
-                break;
+                $loaded = true;
             }
 
             sleep(1); //Wait for caddy to refresh
-        } while ($maxRetries > 0);
+        } while ($maxRetries > 0 && !$loaded);
+
+        if (!$loaded) {
+            $this->fail('Couldnt verify the config has been loaded');
+        }
 
         $this->assertEquals($instanceConfig, $remoteConfig);
     }
