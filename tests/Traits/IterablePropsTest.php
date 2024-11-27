@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class IterablePropsTest extends TestCase
 {
+    /**
+     * @covers \mattvb91\CaddyPhp\Traits\IterableProps::iterateAllProperties
+     */
     public function testIterateAllProperties(): void
     {
         $testItem = new IterablePropsTestItem();
